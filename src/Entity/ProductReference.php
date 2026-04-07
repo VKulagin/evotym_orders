@@ -42,17 +42,4 @@ class ProductReference extends AbstractProduct
         $this->setPrice($price);
         $this->quantity = $quantity;
     }
-
-    public function decreaseQuantity(int $quantity): void
-    {
-        if ($quantity <= 0) {
-            throw new InvalidArgumentException('Quantity must be greater than zero.');
-        }
-
-        if ($this->quantity < $quantity) {
-            throw new DomainException('Not enough product quantity available.');
-        }
-
-        $this->quantity -= $quantity;
-    }
 }

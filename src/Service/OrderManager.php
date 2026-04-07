@@ -28,8 +28,6 @@ final readonly class OrderManager implements OrderManagerInterface
             throw new DomainException('Product not found.');
         }
 
-        $product->decreaseQuantity($request->quantityOrdered);
-
         $order = new Order(
             product: $product,
             customerName: $request->customerName,

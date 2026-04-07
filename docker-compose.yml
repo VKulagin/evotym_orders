@@ -22,7 +22,8 @@ services:
       dockerfile: docker/Dockerfile
     container_name: order-consumer
     environment:
-      APP_ENV: prod
+      APP_ENV: dev
+      APP_DEBUG: 0
       APP_SECRET: dev-secret
       DATABASE_URL: "postgresql://app:app@order-db:5432/order_service?serverVersion=16&charset=utf8"
       MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@host.docker.internal:5672/%2f/messages"
