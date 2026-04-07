@@ -1,0 +1,48 @@
+services:
+  order-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: order-service
+    ports:
+      - "8001:8001"
+    environment:
+      APP_ENV: dev
+      APP_SECRET: dev-secret
+      DATABASE_URL: "postgresql://app:app@order-db:5432/order_service?serverVersion=16&charset=utf8"
+      MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@host.docker.internal:5672/%2f/messages"
+    depends_on:
+      - order-db
+    volumes:
+      - ./:/app
+
+  order-consumer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: order-consumer
+    environment:
+      APP_ENV: prod
+      APP_SECRET: dev-secret
+      DATABASE_URL: "postgresql://app:app@order-db:5432/order_service?serverVersion=16&charset=utf8"
+      MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@host.docker.internal:5672/%2f/messages"
+    depends_on:
+      - order-db
+    volumes:
+      - ./:/app
+    command: ["php", "bin/console", "messenger:consume", "product_events", "-vv"]
+
+  order-db:
+    image: postgres:16
+    container_name: order-db
+    environment:
+      POSTGRES_DB: order_service
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    ports:
+      - "5433:5432"
+    volumes:
+      - order_db_data:/var/lib/postgresql/data
+
+volumes:
+  order_db_data:
