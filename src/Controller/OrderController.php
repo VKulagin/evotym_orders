@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DomainException;
+use InvalidArgumentException;
 use App\DTO\CreateOrderRequest;
 use App\Service\OrderManagerInterface;
 use App\Service\OrderResponseFactoryInterface;
@@ -38,7 +39,7 @@ final class OrderController extends AbstractController
 
         try {
             $order = $orderService->create($dto);
-        } catch (DomainException $exception) {
+        } catch (DomainException|InvalidArgumentException $exception) {
             return $this->json(
                 ['message' => $exception->getMessage()],
                 Response::HTTP_BAD_REQUEST
